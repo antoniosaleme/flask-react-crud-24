@@ -42,12 +42,20 @@ def getUser(id):
         return jsonify({"error": "User not found"}), 404
 
 @app.route('/users/<id>', methods=['DELETE'])
-def deleteUser():
-    return "<h1>received</h1>"
+def deleteUser(id):
+    users.delete_one({"_id": ObjectId(id)})
+    return jsonify({"message": "User deleted"})
+
 
 @app.route('/users/<id>', methods=['PUT'])
-def updateUser():
-    return "<h1>received</h1>"
+def updateUser(id):
+    users.update_one({"_id": ObjectId(id)}, {"$set": {
+        "name": request.json["name"],
+        "email": request.json["email"],
+        "password": request.json["password"]
+    }})
+    
+    return jsonify({"message": "User updated"})
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True) # en true para que se reinicie el servidor cada vez que se haga un cambio en el código
